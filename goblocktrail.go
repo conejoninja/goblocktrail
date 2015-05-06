@@ -1,28 +1,28 @@
 package goblocktrail
 
 import (
-	"crypto/tls"
-	"encoding/json"
-	"io/ioutil"
-	"net/http"
-	"strconv"
-	"strings"
+    "crypto/tls"
+    "encoding/json"
+    "io/ioutil"
+    "net/http"
+    "strconv"
+    "strings"
     "bytes"
 )
 
 var NetworkList = []string{"tbtc", "btc"}
 
 type API struct {
-	apiKey        string
+    apiKey        string
     network       string
     version       string
-	client        *http.Client
+    client        *http.Client
 }
 
 func NewAPI(apiKey string) *API {
-	tr := &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-	}
+    tr := &http.Transport{
+        TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+    }
     client := &http.Client{Transport: tr}
 
     return &API{apiKey, "BTC", "v1", client}
@@ -30,10 +30,10 @@ func NewAPI(apiKey string) *API {
 
 func (this *API) call(action, httpMethod string, params map[string]string) ([]byte, error) {
 
-	var err error
-	var res *http.Response
+    var err error
+    var res *http.Response
 
-	if httpMethod=="POST" {
+    if httpMethod=="POST" {
 
         jsonString, jsonError := json.Marshal(params)
         if jsonError!=nil {
@@ -43,16 +43,16 @@ func (this *API) call(action, httpMethod string, params map[string]string) ([]by
         req, _ := http.NewRequest("POST", "https://api.blocktrail.com/"+this.version+"/"+this.network+"/"+action+"?api_key="+this.apiKey, bytes.NewBuffer([]byte(jsonString)))
         res, err = this.client.Do(req)
 
-	} else {
+    } else {
         valuesStr := "api_key="+this.apiKey
         for key, val := range params {
             valuesStr += "&"+key+"="+val
         }
-		res, err = this.client.Get("https://api.blocktrail.com/"+this.version+"/"+this.network+"/"+action+"?"+valuesStr)
-	}
-	body, err := ioutil.ReadAll(res.Body)
-	res.Body.Close()
-	return body, err
+        res, err = this.client.Get("https://api.blocktrail.com/"+this.version+"/"+this.network+"/"+action+"?"+valuesStr)
+    }
+    body, err := ioutil.ReadAll(res.Body)
+    res.Body.Close()
+    return body, err
 }
 
 func (this *API) SetNetwork(network string) bool{

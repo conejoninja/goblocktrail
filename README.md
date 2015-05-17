@@ -19,7 +19,7 @@ See [Go Doc](http://godoc.org/github.com/conejoninja/goblocktrail) or [Go Walker
 package main
 
 import (
-    "./goblocktrail"
+    "github.com/conejoninja/goblocktrail"
     "fmt"
 )
 
